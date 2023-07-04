@@ -4,6 +4,11 @@ require_once '../functions.php';
 $conn = connectDatabase();
 
 session_start();
+if (!isset($_SESSION['nik'])) {
+    header("Location: login.php");
+    exit();
+}
+
 $id = $_GET['id'];
 $status = $_GET['status'];
 
