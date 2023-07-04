@@ -100,4 +100,24 @@ function showData($conn, $nik, $level) {
 
   return $row;
 }
+
+function countData($conn, $nik, $level) {
+  switch ($level) {
+    case "rt":
+      $query = "SELECT * FROM letters WHERE rt = (SELECT rt FROM users WHERE nik = :nik) AND rw = (SELECT rw FROM users WHERE nik = :nik) AND status = 0";
+      break;
+    case "rw":
+      $query = "SELECT * FROM letters WHERE rw = (SELECT rw FROM users WHERE nik = :nik) AND status = 1";
+      break;
+    case "kel":
+      $query = "SELECT * FROM letters WHERE status = 2 OR 3";
+      break;
+  }
+
+  $stmt = $conn->prepare($query);
+  $stmt->bindParam(':nik', $nik);
+  $stmt->execute();
+
+  return $stmt;
+}
 ?>
