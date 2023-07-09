@@ -83,7 +83,7 @@ function generateID($conn) {
 function showData($conn, $nik, $level) {
   switch ($level) {
     case "rt":
-      $query = "SELECT * FROM letters WHERE rt = (SELECT rt FROM users WHERE nik = :nik) AND rw = (SELECT rw FROM users WHERE nik = :nik) AND status = 0";
+      $query = "SELECT * FROM letters WHERE rt = (SELECT rt FROM users WHERE nik = :nik) AND rw = (SELECT rw FROM users WHERE nik = :nik) AND status = 0 OR 1";
       break;
     case "rw":
       $query = "SELECT * FROM letters WHERE rw = (SELECT rw FROM users WHERE nik = :nik) AND status = 1";
@@ -119,5 +119,14 @@ function countData($conn, $nik, $level) {
   $stmt->execute();
 
   return $stmt;
+}
+
+function showRw($conn) {
+  $query = "SELECT * FROM rw ORDER BY rw ASC";
+  $stmt = $conn->prepare($query);
+  $stmt->execute();
+  $row = $stmt->fetchAll();
+
+  return $row;
 }
 ?>
