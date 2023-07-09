@@ -3,27 +3,6 @@ require_once 'functions.php';
 
 // Menghubungkan ke database
 $conn = connectDatabase();
-
-// Jika ada data yang dikirimkan melalui form
-if (isset($_POST["add"])) {
-  $id = generateID($conn);
-  $nik = $_POST['nik'];
-  $nama = $_POST['nama'];
-  $alamat = $_POST['alamat'];
-  $rt = $_POST['rt'];
-  $rw = $_POST['rw'];
-  $keperluan = $_POST['keperluan'];
-
-  // Memanggil fungsi addUser untuk menambahkan user baru
-  if (addSurat($conn, $id, $nik, $nama, $alamat, $rt, $rw, $keperluan)) {
-    // Jika penambahan user berhasil, tampilkan pesan sukses
-    $message = "Surat pengantar baru berhasil ditambahkan!";
-    header("Location: index.php");
-  } else {
-    // Jika penambahan user gagal, tampilkan pesan error
-    $error = "Gagal menambahkan surat pengantar baru!";
-  }
-}
 ?>
 
 <!DOCTYPE html>
@@ -49,6 +28,10 @@ if (isset($_POST["add"])) {
     <style>
         .card {
             max-width: 32rem;
+        }
+
+        select option[disabled] {
+            display: none;
         }
     </style>
 
@@ -83,26 +66,34 @@ if (isset($_POST["add"])) {
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form class="user p-3" method="POST" action="index.php">
+                        <form class="user p-3" id="pengajuan">
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user" id="nik" name="nik" placeholder="Masukkan NIK..." required>
+                                <input type="text" class="form-control" id="nik" name="nik" placeholder="Masukkan NIK..." required>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user" id="nama" name="nama" placeholder="Masukkan Nama..." required>
+                                <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama..." required>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user" id="alamat" name="alamat" placeholder="Masukkan Alamat..." required>
+                                <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Masukkan Alamat..." required>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user" id="rt" name="rt" placeholder="Masukkan RT..." required>
+                                <select class="form-control" id="rw" name="rw" required>
+                                    <option selected disabled>Pilih RW...</option>
+                                    <?php $rws = showRw($conn); foreach ($rws as $rw) { ?>
+                                    <option value="<?= $rw['rw'] ?>"><?= $rw['rw'] ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user" id="rw" name="rw" placeholder="Masukkan RW..." required>
+                                <select class="form-control" id="rt" name="rt" required>
+                                    <option selected disabled>Pilih RW terlebih dahulu...</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user" id="keperluan" name="keperluan" placeholder="Masukkan Keperluan..." required>
+                                <input type="text" class="form-control" id="keperluan" name="keperluan" placeholder="Masukkan Keperluan..." required>
                             </div>
-                            <input type="submit" class="btn btn-primary btn-user btn-block" name="add" value="Ajukan">
+                            <div id="result"></div>
+                            <input type="submit" class="btn btn-primary btn-block" name="add" value="Ajukan">
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -122,7 +113,7 @@ if (isset($_POST["add"])) {
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form class="user p-3" method="POST" action="search.php">
+                        <form class="user p-3" id="search" method="POST" action="search.php">
                             <div class="form-group">
                                 <input type="text" class="form-control form-control-user" id="nik" name="nik" placeholder="Masukkan NIK..." required>
                             </div>
@@ -146,6 +137,52 @@ if (isset($_POST["add"])) {
 
     <!-- Custom scripts for all pages-->
     <script src="assets/js/sb-admin-2.min.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+    $(document).ready(function(){
+        $('#rw').on('change', function(){
+            var rwid = $(this).val();
+            if(rwid){
+                $.ajax({
+                    type:'POST',
+                    url:'ajaxData.php',
+                    data:'rwid='+rwid,
+                    success:function(html){
+                        $('#rt').html(html);
+                    }
+                }); 
+            }else{
+                $('#rt').html('<option value="">Pilih RW terlebih dahulu...</option>');
+            }
+        });
+    });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#pengajuan').submit(function(event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                var form = this;
+                $.ajax({
+                    type: 'POST',
+                    url: 'add_letter.php',
+                    data: formData,
+                    success: function(response) {
+                        Swal.fire(
+                            'Sukses',
+                            response,
+                            'success'
+                        );
+                        form.reset();
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 
