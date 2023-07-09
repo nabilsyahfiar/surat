@@ -100,23 +100,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
 
 </html>
-
-<!-- <!DOCTYPE html>
-<html>
-<head>
-  <title>Halaman Login</title>
-</head>
-<body>
-  <h2>Silakan Login</h2>
-  <?php if (isset($error)) { ?>
-    <p><?php echo $error; ?></p>
-  <?php } ?>
-  <form method="POST" action="login.php">
-    <label for="nik">NIK:</label>
-    <input type="text" id="nik" name="nik" required><br><br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br><br>
-    <input type="submit" value="Login">
-  </form>
-</body>
-</html> -->
