@@ -81,10 +81,13 @@ $rows = $stmt->fetchAll();
                                 </tbody>
                             </table>
                             <?php } else if (isset($_POST['nik']) && $stmt->rowCount() < 1) { ?>
-                            <h1>NIK tidak ditemukan!</h1>
+                            <h1 class="h4 text-center">Surat Pengantar dengan NIK tersebut tidak ditemukan!</h1>
                             <?php } else {?>
-                            <h1>Masukkan NIK anda!</h1>
+                            <h1 class="h4 text-center">Masukkan NIK anda!</h1>
                             <?php } ?>
+                            <div class="row justify-content-center mt-5">
+                                <a href="./" class="btn btn-success">Kembali</a>
+                            </div>
                         </div>
                     </div>
                 </div>
