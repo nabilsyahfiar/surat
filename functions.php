@@ -83,7 +83,7 @@ function generateID($conn) {
 function showData($conn, $nik, $level) {
   switch ($level) {
     case "rt":
-      $query = "SELECT * FROM letters WHERE rt = (SELECT rt FROM users WHERE nik = :nik) AND rw = (SELECT rw FROM users WHERE nik = :nik) AND status = 0 OR 1";
+      $query = "SELECT * FROM letters WHERE rt = (SELECT rt FROM users WHERE nik = :nik) AND rw = (SELECT rw FROM users WHERE nik = :nik) AND status = 0";
       break;
     case "rw":
       $query = "SELECT * FROM letters WHERE rw = (SELECT rw FROM users WHERE nik = :nik) AND status = 1";
