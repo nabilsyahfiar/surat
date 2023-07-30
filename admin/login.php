@@ -3,10 +3,16 @@ require_once '../functions.php';
 
 // Memeriksa apakah pengguna sudah login atau belum
 session_start();
-if (isset($_SESSION['nik'])) {
-  // Jika sudah login, redirect ke halaman utama atau halaman setelah login sukses
-  header("Location: home.php");
-  exit();
+if (isset($_SESSION['level']) && $_SESSION['level'] == "rt") {
+    // Jika sudah login, redirect ke halaman utama atau halaman setelah login sukses
+    header("Location: ./rt/");
+    exit();
+} else if (isset($_SESSION['level']) && $_SESSION['level'] == "rw") {
+    header("Location: ./rw/");
+    exit();
+} else if (isset($_SESSION['level']) && $_SESSION['level'] == "kel") {
+    header("Location: /");
+    exit();
 }
 
 // Jika ada data yang dikirimkan melalui form login
@@ -20,11 +26,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // Memeriksa kecocokan nik dan password
   if (checkLogin($conn, $nik, $password)) {
     // Jika login berhasil, simpan informasi user di session
-    $_SESSION['nik'] = $nik;
+    $level = $_SESSION['level'];
 
-    // Redirect ke halaman utama atau halaman setelah login sukses
-    header("Location: home.php");
-    exit();
+    if ($level == "rt") {
+        // Redirect ke halaman utama atau halaman setelah login sukses
+        header("Location: ./rt/");
+        exit();
+    } else if ($level == "rw") {
+        header("Location: ./rw/");
+        exit();
+    } else if ($level == "kel") {
+        header("Location: ./");
+        exit();
+    }
   } else {
     // Jika login gagal, tampilkan pesan error
     $error = "NIK atau password salah!";
@@ -73,12 +87,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <form class="user" method="POST" action="login.php">
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-user" id="nik" name="nik" placeholder="Masukkan NIK..." required>
+                                    <input type="text" class="form-control" id="nik" name="nik" placeholder="Masukkan NIK..." required>
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control form-control-user" id="password" name="password" placeholder="Password" required>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
                                 </div>
-                                <input type="submit" class="btn btn-primary btn-user btn-block" value="Login">
+                                <input type="submit" class="btn btn-primary btn-block" value="Login">
                             </form>
                         </div>
                     </div>

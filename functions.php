@@ -21,6 +21,7 @@ function checkLogin($conn, $nik, $password) {
 
   if ($user && password_verify($password, $user['password'])) {
     $_SESSION['level'] = $user['level'];
+    $_SESSION['nik'] = $user['nik'];
     return true;
   } else {
     return false;
@@ -126,6 +127,16 @@ function showRw($conn) {
   $stmt = $conn->prepare($query);
   $stmt->execute();
   $row = $stmt->fetchAll();
+
+  return $row;
+}
+
+function showWarga($conn, $nik) {
+  $query = "SELECT * FROM warga WHERE nik = :nik";
+  $stmt = $conn->prepare($query);
+  $stmt->bindParam(':nik', $nik);
+  $stmt->execute();
+  $row = $stmt->fetch();
 
   return $row;
 }

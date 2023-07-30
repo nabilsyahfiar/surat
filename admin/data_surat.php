@@ -8,7 +8,7 @@ session_start();
 if ($_SESSION['level'] !== 'kel') {
     header("Location: login.php");
     exit();
-  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +22,7 @@ if ($_SESSION['level'] !== 'kel') {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>e-Surat | Dashboard</title>
+    <title>e-Surat | Surat Pengantar</title>
 
     <!-- Custom fonts for this template -->
     <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -58,14 +58,14 @@ if ($_SESSION['level'] !== 'kel') {
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="dashboard.php">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
             
             <!-- Nav Item - Tables -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="data_surat.php">
                     <i class="fas fa-fw fa-table"></i><span>Data Surat</span>
                 </a>
@@ -130,32 +130,64 @@ if ($_SESSION['level'] !== 'kel') {
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Dashboard</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Data Surat Pengantar</h1>
 
-                    <!-- Content -->
-                    <div class="row">
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Jumlah Surat Pengantar</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            <?php
-                                            // Menampilkan semua data pengguna
-                                            $letters = countData($conn, $_SESSION['nik'], $_SESSION['level']);
-                                            echo $letters->rowCount();
-                                            ?>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-table fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Data Surat Pengantar</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>NIK</th>
+                                            <th>Nama</th>
+                                            <th>Alamat</th>
+                                            <th>RT</th>
+                                            <th>RW</th>
+                                            <th>Keperluan</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        // Menampilkan semua data pengguna
+                                        $letters = showData($conn, $_SESSION['nik'], $_SESSION['level']);
+
+                                        foreach ($letters as $letter) {
+                                        ?>
+                                        <tr>
+                                            <td><?= $letter['id']; ?></td>
+                                            <td><?= $letter['nik']; ?></td>
+                                            <td><?= $letter['nama']; ?></td>
+                                            <td><?= $letter['alamat']; ?></td>
+                                            <td><?= $letter['rt']; ?></td>
+                                            <td><?= $letter['rw']; ?></td>
+                                            <td><?= $letter['keperluan']; ?></td>
+                                            <td>
+                                                <?php 
+                                                    if ($_SESSION['level'] == "rt" && $letter['status'] == 0) {
+                                                        echo "<a href='verifikasi.php?id=$letter[0]&status=$letter[7]' class='btn btn-link'>Verifikasi</a>";
+                                                    } else if ($_SESSION['level'] == "rw" && $letter['status'] == 1) {
+                                                        echo "<a href='verifikasi.php?id=$letter[0]&status=$letter[7]' class='btn btn-link'>Verifikasi</a>";
+                                                    } else if ($_SESSION['level'] == "kel" && $letter['status'] == 2) {
+                                                        echo "<a href='verifikasi.php?id=$letter[0]&status=$letter[7]' class='btn btn-link'>Verifikasi</a>";
+                                                    } else {
+                                                        echo "Sudah Validasi";
+                                                    }
+                                                ?>
+                                            </td>
+                                        </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <!-- /.container-fluid -->
 
